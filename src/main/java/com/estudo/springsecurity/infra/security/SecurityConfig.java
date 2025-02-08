@@ -22,7 +22,7 @@ public class SecurityConfig {
   private CustomUserDetailsService userDetailsService;
 
   @Autowired
-  SecurityFilter securityFilter;
+  private SecurityFilter securityFilter;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

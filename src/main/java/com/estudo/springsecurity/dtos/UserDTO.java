@@ -28,5 +28,4 @@ public class UserDTO {
     BeanUtils.copyProperties(this, entity);
     return entity;
   }
-
 }

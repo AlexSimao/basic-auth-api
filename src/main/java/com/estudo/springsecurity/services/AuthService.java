@@ -9,6 +9,8 @@ import com.estudo.springsecurity.dtos.LoginRequestDTO;
 import com.estudo.springsecurity.dtos.UserDTO;
 import com.estudo.springsecurity.dtos.AuthResponseDTO;
 import com.estudo.springsecurity.entities.User;
+import com.estudo.springsecurity.infra.exceptions.EmailAlreadyInUseException;
+import com.estudo.springsecurity.infra.exceptions.EntityNotFoundException;
 import com.estudo.springsecurity.infra.security.TokenService;
 import com.estudo.springsecurity.repositories.UserRepository;
 
@@ -23,8 +25,7 @@ public class AuthService {
 
   public AuthResponseDTO login(LoginRequestDTO loginRequestDTO) {
     User user = userRepository.findByEmail(loginRequestDTO.email())
-        .orElseThrow(() -> new RuntimeException("User Not Found"));
-    // Tratar exceção para alertar o usuario caso não esteja registrado.
+        .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado."));
 
     passwordEncoder.matches(loginRequestDTO.password(), user.getPassword());
     String token = tokenService.generateKeyToken(user);
@@ -34,21 +35,17 @@ public class AuthService {
   public AuthResponseDTO register(UserDTO userDTO) {
     Optional<User> user = userRepository.findByEmail(userDTO.getEmail());
 
-    if (user.isEmpty()) {
-      User newUser = userDTO.toEntity();
-      newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-      userRepository.save(newUser);
-      String token = tokenService.generateKeyToken(newUser);
-
-      return new AuthResponseDTO(newUser.getName(), token, "Novo Usuario registrado com Sucesso");
+    if (user.isPresent()) {
+      throw new EmailAlreadyInUseException("Este Email já esta em uso.");
     }
 
-    // senha é inutil se eu só preciso do email para auterar a senha. tem que
-    // criar exceção caso tentem criar usuario com email já registrado.
-    user.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
-    userRepository.save(user.get());
-    String token = tokenService.generateKeyToken(user.get());
-    return new AuthResponseDTO(user.get().getEmail(), token, "Usuario já tinha registro. Senha auterada.");
+    User newUser = userDTO.toEntity();
+    newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+    userRepository.save(newUser);
+
+    String token = tokenService.generateKeyToken(newUser);
+
+    return new AuthResponseDTO(newUser.getName(), token, "Novo Usuario registrado com Sucesso");
   }
 
 }

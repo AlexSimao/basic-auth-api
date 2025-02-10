@@ -31,14 +31,4 @@ public class UserService {
     return dto;
   }
 
-  @Transactional
-  public UserDTO createUser(UserDTO userDTO) {
-    userRepository.findByEmail(userDTO.getEmail())
-        .orElseThrow(() -> new RuntimeException("Email: " + userDTO.getEmail() + " ja em uso"));
-
-    User result = userRepository.save(userDTO.toEntity());
-    UserDTO dto = new UserDTO(result);
-    return dto;
-  }
-
 }

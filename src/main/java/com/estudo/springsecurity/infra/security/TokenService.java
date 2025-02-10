@@ -19,8 +19,11 @@ public class TokenService {
   @Value("${api.security.token.secret}")
   private String secret;
 
+  @Value("${api.security.token.expiration-minutes:120}") // Tempo de expiração (2 horas padrão)
+  private long expirationMinutes;
+
   private Instant generateExpirationDate() {
-    return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    return LocalDateTime.now().plusMinutes(expirationMinutes).toInstant(ZoneOffset.of("-03:00"));
   }
 
   public String generateKeyToken(User user) {

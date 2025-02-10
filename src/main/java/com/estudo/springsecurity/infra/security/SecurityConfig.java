@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+  @SuppressWarnings("unused")
   @Autowired
   private CustomUserDetailsService userDetailsService;
 
@@ -34,6 +35,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+
     return http.build();
   }
 

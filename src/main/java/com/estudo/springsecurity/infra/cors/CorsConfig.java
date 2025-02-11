@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
   @Value("${cors.origins}")
   private String cors;
 
-  @SuppressWarnings("null") // Temporario
+  @SuppressWarnings("null")
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")

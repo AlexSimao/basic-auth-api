@@ -37,7 +37,7 @@ public class TokenService {
       return token;
 
     } catch (JWTCreationException exception) {
-      throw new RuntimeException("Erro de autenticação" + exception);
+      throw new RuntimeException("Erro na geração de Token" + exception);
     }
   }
 
@@ -52,6 +52,7 @@ public class TokenService {
           .getSubject();
 
     } catch (JWTVerificationException exception) {
+      // Token inválido será tratado como (403-Forbidden) no SecurityFilter
       return null;
     }
   }

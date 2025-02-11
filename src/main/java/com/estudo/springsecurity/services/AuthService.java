@@ -66,8 +66,10 @@ public class AuthService {
       throw new EmailAlreadyInUseException("Este Email já esta em uso.");
     }
 
-    if (userDTO.getRoles().isEmpty()) {
-      throw new IllegalArgumentException("Role não pode ser vazio: " + userDTO.getRoles());
+    if (userDTO.getRoles() == null) { // Se não for enviado roles no request, define como USER
+      Set<String> roles = new HashSet<>();
+      roles.add("USER");
+      userDTO.setRoles(roles);
     }
 
     User newUser = toEntity(userDTO);
@@ -75,7 +77,6 @@ public class AuthService {
     userRepository.save(newUser);
 
     String token = tokenService.generateKeyToken(newUser);
-
     return new AuthResponseDTO(newUser.getName(), token, "Novo Usuario registrado com Sucesso");
   }
 

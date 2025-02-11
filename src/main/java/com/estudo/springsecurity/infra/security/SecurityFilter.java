@@ -16,25 +16,29 @@ import java.io.IOException;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
+
     @Autowired
     private TokenService tokenService;
+
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @SuppressWarnings("null") // Ajuste temporario
+    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         var token = this.recoverToken(request);
-        var login = tokenService.validateToken(token);
 
-        if (login != null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(login); // Use UserDetailsService
+        if (token != null) { // Se o Token for válido, autentica o usuário
+            var login = tokenService.validateToken(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(login);
 
             var authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                    userDetails.getAuthorities()); // Use UserDetails
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                    userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication); // Autentica o usuário
         }
+
+        // Se token for inválido, usuário será tratado como (403-Forbidden) por padrão.
 
         filterChain.doFilter(request, response);
     }

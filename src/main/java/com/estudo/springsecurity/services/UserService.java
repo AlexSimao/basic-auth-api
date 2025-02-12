@@ -3,6 +3,7 @@ package com.estudo.springsecurity.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ public class UserService {
   private UserRepository userRepository;
 
   @Transactional(readOnly = true)
+  @PreAuthorize("hasRole('ADMIN')")
   public Page<UserDTO> getAll(Pageable pageable) {
     Page<User> result = userRepository.findAll(pageable);
     Page<UserDTO> dto = result.map(UserDTO::new);
@@ -23,6 +25,7 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
+  @PreAuthorize("hasRole('ADMIN')")
   public UserDTO getOne(String id) {
     User result = userRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Usuario com id: " + id + " não encontrado"));

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity // Habilita para essa classe as configuraçoes do Spring Security
+@EnableMethodSecurity(securedEnabled = true) // Habilita a segurança baseada em anotações @PreAuthorize e @Secured
 public class SecurityConfig {
 
   @SuppressWarnings("unused")
@@ -36,7 +38,6 @@ public class SecurityConfig {
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-            .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
             // So deve ser descomentado para cadastro do primeiro usuário ADMIN no sistema.
             // .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
             .anyRequest().authenticated())

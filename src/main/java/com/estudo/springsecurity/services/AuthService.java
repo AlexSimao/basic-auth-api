@@ -59,6 +59,7 @@ public class AuthService {
     return new AuthResponseDTO(user.getName(), token, "Bem Vindo de Volta");
   }
 
+  // Apenas ADMIN pode registrar novos usuários configurando no SecurityConfig
   public AuthResponseDTO register(UserDTO userDTO) {
     Optional<User> user = userRepository.findByEmail(userDTO.getEmail());
 

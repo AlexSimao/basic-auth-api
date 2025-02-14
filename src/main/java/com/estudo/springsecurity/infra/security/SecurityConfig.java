@@ -36,10 +36,10 @@ public class SecurityConfig {
         // Configura a política de sessão como stateless
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
+            // comentar a linha abaixo para cadastrar o primeiro usuário ADMIN
             .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-            // So deve ser descomentado para cadastro do primeiro usuário ADMIN no sistema.
-            // .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+            .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
             .anyRequest().authenticated())
         // Verifica se o token do usuario é válido para operação solicitada
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);

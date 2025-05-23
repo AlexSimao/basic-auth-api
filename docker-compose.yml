@@ -1,26 +1,14 @@
 services:
   db:
-    image: postgres:latest
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: user-security
       POSTGRES_PASSWORD: 1234567
     ports:
-      - "5430:5432"
+      - "5433:5432"
     volumes:
       - ./.db_data:/var/lib/postgresql/data
-    networks:
-      - mynetwork
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "80:80"
-    depends_on:
-      - db
     networks:
       - mynetwork
 

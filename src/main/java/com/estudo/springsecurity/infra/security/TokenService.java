@@ -32,6 +32,7 @@ public class TokenService {
 
       String token = JWT.create().withIssuer("com.estudo.springsecurity")
           .withSubject(user.getEmail())
+//          .withSubject(user.)
           .withExpiresAt(generateExpirationDate())
           .sign(algorithm);
       return token;
